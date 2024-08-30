@@ -2,16 +2,16 @@
 
 PROGRAM_NAME = tester
 
-SRC_FILES = test.c
-OBJ_FILES = $(patsubst %.c,%.o,${SRC_FILES})
-SHS_FILES = lib/shs/shs.c
-CORE_FILES = lib/core/core_bit.c \
-		 lib/core/core_buff.c \
-		 lib/core/core_logger.c \
-		 lib/core/core_memdeb.c \
-		 lib/core/core_net.c \
-		 lib/core/core_str.c \
-		 lib/core/core_stuff.c
+SRC_FILES  = test.c
+OBJ_FILES  = $(patsubst %.c,%.o,${SRC_FILES})
+SHS_FILES  = ../shs/shs.c
+CORE_FILES = ../core/core_bit.c \
+             ../core/core_buff.c \
+             ../core/core_logger.c \
+             ../core/core_memdeb.c \
+             ../core/core_net.c \
+             ../core/core_str.c \
+             ../core/core_stuff.c
 
 CC = gcc
 CCFLAGS = -xc -std=c89 -ansi -pedantic-errors -pedantic \
@@ -19,7 +19,7 @@ CCFLAGS = -xc -std=c89 -ansi -pedantic-errors -pedantic \
 		 -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes \
 		 -Wconversion -g
 
-IFLAGS = -I./ -I./lib/include
+IFLAGS = -I./ -I./lib/include -I../include
 LDFLAGS = -L./
 #RAYFLAGS = -lGL -lm -lpthread -ldl -lX11 \
 #		-Wl,-rpath=./lib/raylib/ -L./lib/raylib -lraylib
@@ -52,7 +52,7 @@ local_test: build_test run_test
 build_test:
 	@echo "Compiling... (test)"
 	@mkdir -p bin
-	@cp -r test bin/test
+	@cp -r shs_test_files bin/shs_test_files
 	$(CC) $(FLAGS) test.c $(SHS_FILES) $(CORE_FILES) -o bin/${PROGRAM_NAME}_test
 
 run_test:

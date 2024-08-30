@@ -13,7 +13,7 @@ int snprintf(char* str, size_t size, const char *format, ...);
 
 #define TEST_FILES_COUNT 3
 char* const test_files[TEST_FILES_COUNT] = {
-	"test/test_abcde", "test/test_lorem", "test/test_poem" };
+	"shs_test_files/test_abcde", "shs_test_files/test_lorem", "shs_test_files/test_poem" };
 SHS_Word32 test_exp_results[TEST_FILES_COUNT][5] = {
 	{ 0xec113123, 0x86ad5616, 0x74f724b8, 0xcca7cf17, 0x96e26d1d },
 	{ 0x0d7d0c40, 0x6f4b1152, 0x70cac19c, 0x2c67522a, 0x4a9d9478 },
