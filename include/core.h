@@ -20,9 +20,10 @@
 
 
 /* Types
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 
 typedef unsigned char uchar;
+typedef unsigned int  uint;
 
 typedef unsigned char     n8;
 typedef unsigned short    n16;
@@ -34,7 +35,9 @@ typedef signed short    i16;
 typedef signed int      i32;
 typedef signed long int i64;
 
-#define RL_BOOL_TYPE
+/* Nuke Raylib bool implementation */
+#define bool bool
+
 typedef enum bool {
 	true = (1 == 1),
 	false = (1 != 1)
@@ -49,7 +52,7 @@ typedef int Errno;
 
 
 /* String module v4
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_STR_VER 4
 
 /* #if CORE_STR_SHA != 0xdced4c9c69dbe5a3 */
@@ -89,7 +92,7 @@ extern bool string_equallit(String strA, CString strB);
 
 
 /* Macros
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 
 #ifndef min /* clamp(0, x, y) = min(x, y) if x is unsigned */
 #define min(A, B) ((A) > (B) ? (B) : (A))
@@ -121,7 +124,7 @@ extern bool string_equallit(String strA, CString strB);
 
 
 /* Dinamic arrays implementation (WIP)
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 
 /* typedef struct VoidArray { */
 /* 	char* items; */
@@ -176,7 +179,7 @@ extern bool string_equallit(String strA, CString strB);
 
 
 /* Bit v1
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_BIT_VER 1
 
 /* #if CORE_BIT_SHA != 0xfac875ad08307edd */
@@ -190,7 +193,7 @@ extern void savebuff(FILE *file, char *buffer, n64 buff_len);
 
 
 /* Buffer v1
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_BUF_VER 1
 
 /* #if CORE_BUF_SHA != 0x75a0b7a96790fa97 */
@@ -215,7 +218,7 @@ extern n64 buffer_copy_until_str(char *delimiter, n64 del_len,
 
 
 /* Logger v3
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_LOG_VER 3
 
 /* #if CORE_LOG_SHA != 0xc4238c8855ffa914 */
@@ -246,7 +249,7 @@ extern void core_test(bool pass, CString expected,
 
 
 /* Memdeb v1
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_MEM_VER 1
 
 /* #if CORE_MEM_SHA != 0xfdd83e2b940504d1 */
@@ -265,7 +268,7 @@ extern void *realloc_(void* ptr, size_t size, char* file, int line);
 
 
 /* Net v1
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_NET_VER 1
 
 /* #if CORE_NET_SHA != 0x2c0848b091d04575 */
@@ -283,7 +286,7 @@ extern error hostname_resolve(const char *hostname, struct in_addr *address);
 
 
 /* Stuff v1
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #define CORE_STF_VER 1
 
 /* #if CORE_STF_SHA != 0x7170ff389f686ff1 */
@@ -294,7 +297,7 @@ extern char* shift(int* argc, char*** argv);
 
 
 /* Select Graphic Rendition (SGR)
- * ----------------------------------------------------------- */
+ * ------------------------------------------------------------ */
 #if SGR_ENABLE
 
 #define CSI    "\033["
