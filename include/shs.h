@@ -57,28 +57,28 @@ typedef struct {
 
 
 typedef enum SHA_Digest_Size {
-	SHS_DS160 = 20,
-	SHS_DS224 = 28,
-	SHS_DS256 = 32,
-	SHS_DS384 = 48,
-	SHS_DS512 = 64
+	SHS_DS160 = 20
+	/* SHS_DS224 = 28, */
+	/* SHS_DS256 = 32, */
+	/* SHS_DS384 = 48, */
+	/* SHS_DS512 = 64 */
 } SHS_Digest_Size;
 
 typedef struct { n8 byte[SHS_DS160]; } SHS_digest160;
-typedef struct { n8 byte[SHS_DS224]; } SHS_digest224;
-typedef struct { n8 byte[SHS_DS256]; } SHS_digest256;
-typedef struct { n8 byte[SHS_DS384]; } SHS_digest384;
-typedef struct { n8 byte[SHS_DS512]; } SHS_digest512;
+/* typedef struct { n8 byte[SHS_DS224]; } SHS_digest224; */
+/* typedef struct { n8 byte[SHS_DS256]; } SHS_digest256; */
+/* typedef struct { n8 byte[SHS_DS384]; } SHS_digest384; */
+/* typedef struct { n8 byte[SHS_DS512]; } SHS_digest512; */
 
 
 /* Create and free Blocks (m is Block size, 512 or 1024)
  * ----------------------------------------------------------- */
 
-extern SHS_Block512_List  SHS_block512_create_list_from_file(FILE* file);
-extern SHS_Block1024_List SHS_block1024_create_list_from_file(FILE* file);
+extern SHS_Block512_List  SHS_block512_list_create_from_file(FILE* file);
+/* extern SHS_Block1024_List SHS_block1024_list_create_from_file(FILE* file); */
 
-extern void SHS_block512_List_free(SHS_Block512_List* blocks);
-extern void SHS_block1024_List_free(SHS_Block1024_List* blocks);
+extern void SHS_block512_list_free(SHS_Block512_List* blocks);
+extern void SHS_block1024_list_free(SHS_Block1024_List* blocks);
 
 
 /* Operate on Words (w is Word size, 32 or 64)
@@ -87,22 +87,22 @@ extern void SHS_block1024_List_free(SHS_Block1024_List* blocks);
 extern SHS_Word32 SHS_Word32_ROTL(SHS_Word32 word, n8 n);
 extern SHS_Word32 SHS_Word32_ROTR(SHS_Word32 word, n8 n);
 
-extern SHS_Word64 SHS_Word64_ROTL(SHS_Word64 word, n8 n);
-extern SHS_Word64 SHS_Word64_ROTR(SHS_Word64 word, n8 n);
+/* extern SHS_Word64 SHS_Word64_ROTL(SHS_Word64 word, n8 n); */
+/* extern SHS_Word64 SHS_Word64_ROTR(SHS_Word64 word, n8 n); */
 
 
 /* Generate digest
  * ----------------------------------------------------------- */
 
-extern SHS_digest160 SHS_SHA1_generate_digest(SHS_Block512_List blocks);
-extern SHS_digest224 SHS_SHA224_generate_digest(SHS_Block512_List blocks);
-extern SHS_digest256 SHS_SHA256_generate_digest(SHS_Block512_List blocks);
+extern SHS_digest160 SHS_SHA1_digest_generate(SHS_Block512_List blocks);
+/* extern SHS_digest224 SHS_SHA224_digest_generate(SHS_Block512_List blocks); */
+/* extern SHS_digest256 SHS_SHA256_digest_generate(SHS_Block512_List blocks); */
 
-extern SHS_digest384 SHS_SHA384_generate_digest(SHS_Block1024_List blocks);
-extern SHS_digest512 SHS_SHA512_generate_digest(SHS_Block1024_List blocks);
+/* extern SHS_digest384 SHS_SHA384_digest_generate(SHS_Block1024_List blocks); */
+/* extern SHS_digest512 SHS_SHA512_digest_generate(SHS_Block1024_List blocks); */
 
-extern SHS_digest224 SHS_SHA512_224_generate_digest(SHS_Block1024_List blocks);
-extern SHS_digest256 SHS_SHA512_256_generate_digest(SHS_Block1024_List blocks);
+/* extern SHS_digest224 SHS_SHA512_224_digest_generate(SHS_Block1024_List blocks); */
+/* extern SHS_digest256 SHS_SHA512_256_digest_generate(SHS_Block1024_List blocks); */
 
 
 /* Operate on Digests
@@ -121,8 +121,8 @@ extern bool SHS_digest_compare(SHS_Digest_Size size, const n8* dA, const n8* dB)
 
 extern void SHS_digest_from_Word32(SHS_Digest_Size dsize, n8* digest,
 		n8 hcount, const SHS_Word32* hash);
-extern void SHS_digest_from_Word64(SHS_Digest_Size dsize, n8* digest,
-		n8 hcount, const SHS_Word64* hash);
+/* extern void SHS_digest_from_Word64(SHS_Digest_Size dsize, n8* digest, */
+/* 		n8 hcount, const SHS_Word64* hash); */
 
 
 #endif /* SHS_H_ */

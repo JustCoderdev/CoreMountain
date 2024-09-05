@@ -14,7 +14,7 @@
 /* Create and free Blocks
  * ----------------------------------------------------------- */
 
-SHS_Block512_List SHS_block512_create_list_from_file(FILE* file)
+SHS_Block512_List SHS_block512_list_create_from_file(FILE* file)
 {
 #define BLOCK_SIZE 64
 	i64 file_size = -1;
@@ -142,12 +142,12 @@ SHS_Block512_List SHS_block512_create_list_from_file(FILE* file)
 
 /* extern Block1024_List SHS_block1024_create_list_from_file(FILE* file); */
 
-void SHS_block512_List_free(SHS_Block512_List* blocks) {
+void SHS_block512_list_free(SHS_Block512_List* blocks) {
 	if(blocks->items != NULL) dfree(blocks->items);
 	blocks->count = 0;
 }
 
-void SHS_block1024_List_free(SHS_Block1024_List* blocks) {
+void SHS_block1024_list_free(SHS_Block1024_List* blocks) {
 	if(blocks->items != NULL) dfree(blocks->items);
 	blocks->count = 0;
 }
@@ -190,7 +190,7 @@ static SHS_Word32 SHS_SHA1_K(n8 t) {
 	return 0xca62c1d6;
 }
 
-SHS_digest160 SHS_SHA1_generate_digest(SHS_Block512_List blocks)
+SHS_digest160 SHS_SHA1_digest_generate(SHS_Block512_List blocks)
 {
 	SHS_Word32 hash[5] = { 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0 };
 	SHS_digest160 digest = {0};
@@ -269,15 +269,6 @@ SHS_digest160 SHS_SHA1_generate_digest(SHS_Block512_List blocks)
 
 	return digest;
 }
-
-/* extern digest224 SHS_SHA224_generate_digest(Block512_List blocks); */
-/* extern digest256 SHS_SHA256_generate_digest(Block512_List blocks); */
-
-/* extern digest384 SHS_SHA384_generate_digest(Block1024_List blocks); */
-/* extern digest512 SHS_SHA512_generate_digest(Block1024_List blocks); */
-
-/* extern digest224 SHS_SHA512_224_generate_digest(Block1024_List blocks); */
-/* extern digest256 SHS_SHA512_256_generate_digest(Block1024_List blocks); */
 
 
 /* Operate on Digests

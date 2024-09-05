@@ -31,6 +31,11 @@ struct in_addr addr_to_bytes(n8 A, n8 B, n8 C, n8 D)
 	return address;
 }
 
+/* 255.255.255.255 */
+/* void addr_to_str(struct in_addr addr, char* buffer, n8 buff_len) */
+/* { */
+/* } */
+
 error hostname_resolve(const char *hostname, struct in_addr *address)
 {
 	struct hostent *host_info = {0};

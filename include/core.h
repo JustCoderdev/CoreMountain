@@ -281,7 +281,12 @@ typedef union ip4_addr {
 	n8 bytes_rev[4];
 } in_addr;
 
+
 extern struct in_addr addr_to_bytes(n8 A, n8 B, n8 C, n8 D);
+
+/* Buffer must be at least 000.000.000.000 */
+/* extern void addr_to_str(struct in_addr addr, char* buffer); */
+
 extern error hostname_resolve(const char *hostname, struct in_addr *address);
 
 

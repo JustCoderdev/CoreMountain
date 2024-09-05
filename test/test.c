@@ -22,7 +22,7 @@ SHS_Word32 test_exp_results[TEST_FILES_COUNT][5] = {
 
 /* ------------------ */
 
-void test_word_operations()
+static void test_word_operations(void)
 {
 	printf("\n SHS_Word32 Operations:\n");
 
@@ -35,9 +35,11 @@ void test_word_operations()
 	/* ); */
 }
 
-void print_block512_list(SHS_Block512_List blocks)
+#if 0
+static void print_block512_list(SHS_Block512_List blocks)
 {
-	n64 i, j, k;
+	n64 i;
+	n8 j, k;
 	for(i = 0; i < blocks.count; ++i)
 	{
 		SHS_Block512 block = blocks.items[i];
@@ -47,7 +49,7 @@ void print_block512_list(SHS_Block512_List blocks)
 		{
 			for(k = 0; k < 8; ++k)
 			{
-				char c = block.words[j * 2 + (k > 3)] >> (24 - 8 * k);
+				char c = (char)(block.words[j * 2 + (k > 3)] >> (24 - 8 * k));
 				if(c > 32 && c < 127) printf(" %c", c);
 				else if(c == '\t') printf("\033[33m\\t\033[0m");
 				else if(c == '\r') printf("\033[33m\\r\033[0m");
@@ -68,8 +70,9 @@ void print_block512_list(SHS_Block512_List blocks)
 		printf("\n");
 	}
 }
+#endif
 
-void test_block_creation()
+static void test_block_creation(void)
 {
 	SHS_Block512_List blocks = {0};
 	n64 i;
@@ -86,7 +89,7 @@ void test_block_creation()
 			exit(failure);
 		}
 
-		blocks = SHS_block512_create_list_from_file(file);
+		blocks = SHS_block512_list_create_from_file(file);
 		fclose(file);
 
 		/* print_block512_list(blocks); */
@@ -99,11 +102,11 @@ void test_block_creation()
 		/* Check for 64B files */
 		/* Check for 75B files */
 
-		SHS_block512_List_free(&blocks);
+		SHS_block512_list_free(&blocks);
 	}
 }
 
-void test_digest_operations()
+static void test_digest_operations(void)
 {
 	#define BUFF_LEN 43
 	char buff[BUFF_LEN] = {0};
@@ -127,7 +130,7 @@ void test_digest_operations()
 	/* core_test(SHS_digest_compare(SHS_DS160, digest.byte, hardig.byte, "SHA1 on file ''"), */
 }
 
-void test_sha1()
+static void test_sha1(void)
 {
 	#define BUFF_LEN 43
 	char buffEXP[BUFF_LEN] = {0},
@@ -144,10 +147,11 @@ void test_sha1()
 		SHS_Word32* exp_result = test_exp_results[i];
 
 		FILE* file = fopen(filename, "r");
-		blocks = SHS_block512_create_list_from_file(file);
+		blocks = SHS_block512_list_create_from_file(file);
 		fclose(file);
 
-		digest = SHS_SHA1_generate_digest(blocks);
+		digest = SHS_SHA1_digest_generate(blocks);
+		SHS_block512_list_free(&blocks);
 
 		assert(snprintf(buffDIG, BUFF_LEN, "0x" SHS_D160_FMT, SHS_D160(digest)) < BUFF_LEN);
 		SHS_digest_from_Word32(SHS_DS160, digest.byte, 5, exp_result);
