@@ -51,9 +51,9 @@ typedef enum error {
 typedef int Errno;
 
 
-/* String module v4
+/* String module v5
  * ------------------------------------------------------------ */
-#define CORE_STR_VER 4
+#define CORE_STR_VER 5
 
 /* #if CORE_STR_SHA != 0xdced4c9c69dbe5a3 */
 /* #error Core module STR is out of date, bump the version and update the shas */
@@ -73,15 +73,17 @@ typedef struct String {
 #define string_from(STRING, TEXT_LEN, TEXT) string_from_(STRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
 #define string_cpy(STRING, TEXT_LEN, TEXT) string_cpy_(STRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
 #define string_nterm(STRING) string_nterm_(STRING, __FILE__, __LINE__)
+#define string_as_CStr(STRING) string_as_CStr_(STRING, __FILE__, __LINE__)
 #define string_append(STRING, CHR) string_append_(STRING, CHR, __FILE__, __LINE__)
 #define string_free(STRING) string_free_(STRING, __FILE__, __LINE__)
 
-extern void string_new_(String* string, n32 capacity, char* file, int line);
-extern void string_new_from_(String* string, n32 text_len, char* text, char* file, int line);
-extern void string_from_(String* string, n32 text_len, char* text, char* file, int line);
-extern void string_nterm_(String* string, char* file, int line); /* Null terminate a string */
-extern void string_append_(String* string, char chr, char* file, int line);
-extern void string_free_(String* string, char* file, int line);
+extern void    string_new_(String* string, n32 capacity, char* file, int line);
+extern void    string_new_from_(String* string, n32 text_len, char* text, char* file, int line);
+extern void    string_from_(String* string, n32 text_len, char* text, char* file, int line);
+extern void    string_nterm_(String* string, char* file, int line); /* Null terminate a string */
+extern CString string_as_CStr_(String* string, char* file, int line);
+extern void    string_append_(String* string, char chr, char* file, int line);
+extern void    string_free_(String* string, char* file, int line);
 
 extern void string_clear(String* string);
 extern void string_fmt(String* string, CString format, ...);
@@ -305,6 +307,8 @@ extern char* shift(int* argc, char*** argv);
  * ------------------------------------------------------------ */
 #if SGR_ENABLE
 
+/* TODO: if SGR_ENABLE is undefined then replace with empty strings */
+
 #define CSI    "\033["
 #define M      "m"
 #define Z      ";"
@@ -379,6 +383,117 @@ extern char* shift(int* argc, char*** argv);
 #define BG_BR_WHITE  "107"
 
 #endif /* SGR_ENABLE */
+
+
+/* Target information
+ * ------------------------------------------------------------ */
+
+/* Checked for compilers: Clang, gcc, MinGW, MSVC
+ * source: <https://github.com/cpredef/predef/tree/master> */
+
+#define TENV_UNKNOWN  0
+#define TENV_SHELL    1
+#define TENV_WINDOW   2
+#define TENV_ARDUINO  3
+
+#define TOS_UNKOWN  0
+#define TOS_NONE    1
+#define TOS_LINUX   2
+#define TOS_MACOS   3
+#define TOS_WINDOWS 4
+
+#define TARCH_UNKNOWN 0
+#define TARCH_i386    1
+#define TARCH_x32     2
+#define TARCH_x86_64  3
+#define TARCH_arm     4
+#define TARCH_arm64   5
+#define TARCH_avr     6
+
+/*
+ * Set environment
+ */
+
+/* Ideally the environment should be set by the dev... */
+#ifndef TARGET_ENV
+#	define TARGET_ENV TENV_UNKNOWN
+#endif
+
+/*
+ * Find architecture
+ */
+
+/* is i386 */
+#ifndef TARGET_ARCH
+#	if defined(__i386__) || defined(_M_I86) || defined(_M_IX86) || defined(_X86_)
+#		define TARGET_ARCH TARCH_i386
+#	endif
+#endif
+
+/* is x32 */
+#ifndef TARGET_ARCH
+#	if defined(__ILP32__)
+#		define TARGET_ARCH TARCH_x32
+#	endif
+#endif
+
+/* is x86_64 */
+#ifndef TARGET_ARCH
+#	if defined(__amd64__) || defined(__x86_64__) || defined(_M_AMD64)
+#		define TARGET_ARCH TARCH_x86_64
+#	endif
+#endif
+
+/* is arm */
+#ifndef TARGET_ARCH
+#	if defined(__arm__) || defined(_M_ARM)
+#		define TARGET_ARCH TARCH_arm
+#	endif
+#endif
+
+/* is arm64 */
+#ifndef TARGET_ARCH
+#	if defined(__aarch64__) || defined(_M_ARM64)
+#		define TARGET_ARCH TARCH_x86_64
+#	endif
+#endif
+
+/* Fallback */
+#ifndef TARGET_ARCH
+#	define TARGET_ARCH TARCH_UNKNOWN
+#	error No target architecture has been found
+#endif
+
+/*
+ * Find Operating system
+ */
+
+/* is linux */
+#ifndef TARGET_OS
+#	if defined(__gnu_linux__)
+#		define TARGET_OS TOS_LINUX
+#	endif
+#endif
+
+/* is macos */
+#ifndef TARGET_OS
+#	if defined(__APPLE__)
+#		define TARGET_OS TOS_MACOS
+#	endif
+#endif
+
+/* is windows */
+#ifndef TARGET_OS
+#	if defined(_WIN32)
+#		define TARGET_OS TOS_WINDOWS
+#	endif
+#endif
+
+/* Fallback */
+#ifndef TARGET_OS
+#	define TARGET_OS TOS_UNKOWN
+#	error No target os has been found
+#endif
 
 
 #endif /* CORE_ */

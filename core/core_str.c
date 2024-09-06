@@ -1,4 +1,4 @@
-/* String module for JustCoderdev Core library v4
+/* String module for JustCoderdev Core library v5
  * */
 
 #include <core.h>
@@ -78,6 +78,11 @@ void string_nterm_(String* string, char* file, int line) {
 
 		string_append_(string, '\0', file, line);
 	}
+}
+
+CString string_as_CStr_(String* string, char* file, int line) {
+	string_nterm_(string, file, line);
+	return string->chars;
 }
 
 void string_append_(String* string, char chr, char* file, int line) {

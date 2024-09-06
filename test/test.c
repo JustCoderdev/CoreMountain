@@ -20,12 +20,11 @@ SHS_Word32 test_exp_results[TEST_FILES_COUNT][5] = {
 	{ 0xd0b6dd32, 0x03ca6d7c, 0x0e442171, 0x3c34fe31, 0x8aa67ffa }
 };
 
-/* ------------------ */
+/* SHS tests
+ * ------------------------------------------------------------ */
 
 static void test_word_operations(void)
 {
-	printf("\n SHS_Word32 Operations:\n");
-
 	core_test(SHS_Word32_ROTL(10, 5) == SHS_Word32_ROTR(10, 32 - 5),
 	     "true", "false", "W32 Left/Right Rotation (SHS_Word32_ROTL, SHS_Word32_ROTR)"
 	);
@@ -77,8 +76,6 @@ static void test_block_creation(void)
 	SHS_Block512_List blocks = {0};
 	n64 i;
 
-	printf("\n Block creation:\n");
-
 	for(i = 0; i < TEST_FILES_COUNT; ++i) {
 		char* filename = test_files[i];
 
@@ -116,8 +113,6 @@ static void test_digest_operations(void)
 
 	SHS_digest160 digest = {0};
 
-	printf("\n Digest operations:\n");
-
 	SHS_digest_from_Word32(SHS_DS160, digest.byte, 5, words);
 
 	assert(snprintf(buff, BUFF_LEN, "0x" SHS_D160_FMT, SHS_D160(digest)) < BUFF_LEN);
@@ -140,8 +135,6 @@ static void test_sha1(void)
 	SHS_digest160 digest;
 	n64 i;
 
-	printf("\n SHA-1:\n");
-
 	for(i = 0; i < TEST_FILES_COUNT; ++i) {
 		char* filename = test_files[i];
 		SHS_Word32* exp_result = test_exp_results[i];
@@ -163,16 +156,72 @@ static void test_sha1(void)
 	}
 }
 
+/* Core Types tests
+ * ------------------------------------------------------------ */
+
+static void check_type_sizes(void)
+{
+	String buff = {0};
+	string_new(&buff, 8);
+
+#define test_sizeof(TYPE, EXP) do { \
+	string_fmt(&buff, "%dB", sizeof(TYPE)); \
+	core_test(sizeof(TYPE) == EXP, #EXP "B", string_as_CStr(&buff), \
+			"sizeof(" #TYPE ")\t== " #EXP "B"); \
+} while(0)
+
+	test_sizeof(uchar, 1);
+	test_sizeof(uint, 4);
+
+	test_sizeof(n8 , 1);
+	test_sizeof(n16, 2);
+	test_sizeof(n32, 4);
+	test_sizeof(n64, 8);
+
+	test_sizeof(i8 , 1);
+	test_sizeof(i16, 2);
+	test_sizeof(i32, 4);
+	test_sizeof(i64, 8);
+
+#undef test_sizeof
+
+	string_free(&buff);
+}
+
 int main(void)
 {
+	printf("CoreMountain Validation test suite\n");
 
-	printf("==== SHS Validation Tests ====\n");
+	printf("\n==== Core v%d ====\n", CORE_VER);
 
+	printf("\n Type sizes:\n");
+	check_type_sizes();
+
+	printf("\n Utility Macros: " CSI FG_RED M "MISSING" CSI RESET M "\n");
+	printf("\n Dinamic Arrays: " CSI FG_RED M "MISSING" CSI RESET M "\n");
+	printf("\n SGR rendering: " CSI FG_RED M "MISSING" CSI RESET M "\n");
+	printf("\n Target Info: " CSI FG_RED M "MISSING" CSI RESET M "\n");
+
+	printf("\n==== String v%d ====\n", CORE_STR_VER);
+	printf("\n==== Bit v%d ====\n", CORE_BIT_VER);
+	printf("\n==== Buffer v%d ====\n", CORE_BUF_VER);
+	printf("\n==== Logger v%d ====\n", CORE_LOG_VER);
+	printf("\n==== Memdeb v%d ====\n", CORE_MEM_VER);
+	printf("\n==== Net v%d ====\n", CORE_NET_VER);
+	printf("\n==== Stuff v%d ====\n", CORE_STF_VER);
+
+	printf("\n==== SHS v%d ====\n", SHS_VER);
+
+	printf("\n SHS_Word32 Operations:\n");
 	test_word_operations();
+
+	printf("\n Block creation:\n");
 	test_block_creation();
 
+	printf("\n Digest operations:\n");
 	test_digest_operations();
 
+	printf("\n SHA-1:\n");
 	test_sha1();
 
 	/* from different seeds,

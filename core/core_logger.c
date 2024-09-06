@@ -15,7 +15,7 @@ void core_log(LogLevel level, CString module,
 	va_list args;
 	CString labels[LL_COUNT] = {0};
 
-#if SGR_ENABLE
+#if SGR_ENABLE && DEBUG_ENABLE
 	CString colors[LL_COUNT] = {0};
 #endif
 
@@ -25,7 +25,7 @@ void core_log(LogLevel level, CString module,
 	labels[LL_WARN]  = "WARN";
 	labels[LL_ERROR] = "ERROR";
 
-#if SGR_ENABLE
+#if SGR_ENABLE && DEBUG_ENABLE
 	colors[LL_INFO]  = FG_BLUE;
 	colors[LL_DEBUG] = FG_GREEN;
 	colors[LL_WARN]  = FG_YELLOW;
@@ -69,11 +69,11 @@ void core_test(bool pass, CString expected,
 	va_start(args, format);
 
 	if(pass) {
-		printf("[*] \033[32mPASS\033[0m: ");
+		printf("[*] " CSI FG_GREEN M "PASS" CSI RESET M ": ");
 		vfprintf(stdout, format, args);
 		printf("\n");
 	} else {
-		printf("[x] \033[31mFAIL\033[0m: ");
+		printf("[x] " CSI FG_RED M "FAIL" CSI RESET M ": ");
 		vfprintf(stdout, format, args);
 		printf("\n  expected: %s\n       got: %s\n",
 			expected, got);
