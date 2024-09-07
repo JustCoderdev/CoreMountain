@@ -180,14 +180,15 @@ extern bool string_equallit(String strA, CString strB);
 } while(0)
 
 
-/* Bit v1
+/* Bit v2
  * ------------------------------------------------------------ */
-#define CORE_BIT_VER 1
+#define CORE_BIT_VER 2
 
 /* #if CORE_BIT_SHA != 0xfac875ad08307edd */
 /* #error Core module BIT is out of date, bump the version and update the shas */
 /* #endif */
 
+extern void printc(char c);
 extern void printb(n8 byte);
 extern void printw(n32 word);
 
