@@ -29,8 +29,8 @@ extern n32 buffer_fmt(n32 len, char* buffer, CString format, ...)
 
 	if((n32)size >= len)
 	{
-		core_log(CORE_DEBUG, "Truncation of buffer_fmt with format '%s'\n",
-				format);
+		core_log(CORE_WARN,
+				"Truncation of buffer_fmt with format '%s'\n", format);
 	}
 
 	va_end(args);
@@ -152,6 +152,19 @@ void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line
 
 	core_log(CORE_DEBUG_, file, line,
 			"Writing %d bytes\n", sent_bytes);
+}
+
+bool buffer_equals(n64 buffA_len, n8* buffA, n64 buffB_len, n8* buffB)
+{
+	n64 i;
+
+	if(buffA_len != buffB_len) return false;
+
+	for(i = 0; i < buffA_len; ++i) {
+		if(buffA[i] != buffB[i]) return false;
+	}
+
+	return true;
 }
 
 #undef CORE_LOG_MODULE

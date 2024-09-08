@@ -1,5 +1,5 @@
 /*
- * JustCoderdev's Core library v8
+ * JustCoderdev's Core library v9
  */
 
 #ifndef CORE_H_
@@ -51,46 +51,68 @@ typedef enum error {
 typedef int Errno;
 
 
-/* String module v5
+/* String module v6
  * ------------------------------------------------------------ */
-#define CORE_STR_VER 5
+#define CORE_STR_VER 6
 
 /* #if CORE_STR_SHA != 0xdced4c9c69dbe5a3 */
 /* #error Core module STR is out of date, bump the version and update the shas */
 /* #endif */
 
 typedef const char* CString;
-typedef struct String {
-	n32 count, capacity;
+
+typedef struct {
 	char* chars;
-} String;
+	n32 count;
+} FString;
+
+typedef struct {
+	FString data;
+	n32 capacity;
+} DString;
 
 #define STR_FMT "%.*s"
-#define STR(STRING) (STRING).count, (STRING).chars
+#define FSTR(STRING) (STRING).count, (STRING).chars
+#define DSTR(STRING) (STRING).data.count, (STRING).data.chars
+#define CSTR(STRING) (n32)strlen((STRING)), (STRING)
 
-#define string_new(STRING, CAPACITY) string_new_(STRING, CAPACITY, __FILE__, __LINE__)
-#define string_new_from(STRING, TEXT_LEN, TEXT) string_new_from_(STRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
-#define string_from(STRING, TEXT_LEN, TEXT) string_from_(STRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
-#define string_cpy(STRING, TEXT_LEN, TEXT) string_cpy_(STRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
-#define string_nterm(STRING) string_nterm_(STRING, __FILE__, __LINE__)
-#define string_as_CStr(STRING) string_as_CStr_(STRING, __FILE__, __LINE__)
-#define string_append(STRING, CHR) string_append_(STRING, CHR, __FILE__, __LINE__)
-#define string_free(STRING) string_free_(STRING, __FILE__, __LINE__)
+#define dstring_new(DSTRING, CAPACITY) dstring_new_(DSTRING, CAPACITY, __FILE__, __LINE__)
+#define dstring_new_from(DSTRING, TEXT_LEN, TEXT) dstring_new_from_(DSTRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
+#define dstring_from(DSTRING, TEXT_LEN, TEXT) dstring_from_(DSTRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
+#define dstring_nterm(DSTRING) dstring_nterm_(DSTRING, __FILE__, __LINE__)
+#define dstring_free(DSTRING) dstring_free_(DSTRING, __FILE__, __LINE__)
 
-extern void    string_new_(String* string, n32 capacity, char* file, int line);
-extern void    string_new_from_(String* string, n32 text_len, char* text, char* file, int line);
-extern void    string_from_(String* string, n32 text_len, char* text, char* file, int line);
-extern void    string_nterm_(String* string, char* file, int line); /* Null terminate a string */
-extern CString string_as_CStr_(String* string, char* file, int line);
-extern void    string_append_(String* string, char chr, char* file, int line);
-extern void    string_free_(String* string, char* file, int line);
+#define fstring_new(FSTRING, CAPACITY) fstring_new_(FSTRING, CAPACITY, __FILE__, __LINE__)
+#define fstring_new_from(FSTRING, TEXT_LEN, TEXT) fstring_new_from_(FSTRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
+#define fstring_from(FSTRING, TEXT_LEN, TEXT) fstring_from_(FSTRING, TEXT_LEN, TEXT, __FILE__, __LINE__)
+#define fstring_free(FSTRING) fstring_free_(FSTRING, __FILE__, __LINE__)
 
-extern void string_clear(String* string);
-extern void string_fmt(String* string, CString format, ...);
-extern void string_remove(String* string, n32 count);
+#define dstring_as_CStr(DSTRING) dstring_as_CStr_(DSTRING, __FILE__, __LINE__)
+#define fstring_as_CStr(FSTRING) fstring_as_CStr_(FSTRING, __FILE__, __LINE__)
 
-extern bool string_equals(String strA, n32 strB_len, const char* strB);
-extern bool string_equallit(String strA, CString strB);
+#define dstring_append(DSTRING, CHR) dstring_append_(DSTRING, CHR, __FILE__, __LINE__)
+
+extern void dstring_new_(DString* string, n32 capacity, char* file, int line);
+extern void dstring_new_from_(DString* string, n32 text_len, char* text, char* file, int line);
+extern void dstring_from_(DString* string, n32 text_len, char* text, char* file, int line);
+extern void dstring_nterm_(DString* string, char* file, int line); /* Null terminate a string */
+extern void dstring_free_(DString* string, char* file, int line);
+
+extern void fstring_new_(FString* string, n32 capacity, char* file, int line);
+extern void fstring_new_from_(FString* string, n32 text_len, char* text, char* file, int line);
+extern void fstring_from_(FString* string, n32 text_len, char* text, char* file, int line);
+extern void fstring_free_(FString* string, char* file, int line);
+
+extern CString dstring_as_CStr_(DString* string, char* file, int line);
+extern CString fstring_as_CStr_(FString* string, char* file, int line);
+
+extern void dstring_append_(DString* string, char chr, char* file, int line);
+extern void dstring_clear(DString* string);
+extern void dstring_fmt(DString* string, CString format, ...);
+extern void dstring_remove(DString* string, n32 count);
+
+extern bool fstring_equals(FString strA, n32 strB_len, const char* strB);
+extern bool fstring_equals_CStr(FString strA, CString strB);
 
 
 /* Macros
@@ -228,6 +250,7 @@ extern n64 buffer_copy_until_str(char *delimiter, n64 del_len,
             char *dest_buffer, n64 dest_len);
 
 extern void buffer_put_to_file(FILE *file, n32 buff_len, char *buffer);
+extern bool buffer_equals(n64 buffA_len, n8* buffA, n64 buffB_len, n8* buffB);
 
 
 /* Logger v3
@@ -308,15 +331,16 @@ extern struct in_addr addr_to_bytes(n8 A, n8 B, n8 C, n8 D);
 extern error hostname_resolve(const char *hostname, struct in_addr *address);
 
 
-/* Stuff v1
+/* Stuff v2
  * ------------------------------------------------------------ */
-#define CORE_STF_VER 1
+#define CORE_STF_VER 2
 
 /* #if CORE_STF_SHA != 0x7170ff389f686ff1 */
 /* #error Core module STF is out of date, bump the version and update the shas */
 /* #endif */
 
 extern char* shift(int* argc, char*** argv);
+extern long file_size_get(FILE* file, CString file_name);
 
 
 /* Select Graphic Rendition (SGR)
