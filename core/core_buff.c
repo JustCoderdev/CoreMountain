@@ -1,11 +1,41 @@
-/* Buffer module for JustCoderdev Core library v1
+/* Buffer module for JustCoderdev Core library v2
  * */
+
+#define CORE_LOG_MODULE "buffer"
 
 #include <core.h>
 
+#include <stdarg.h>
 #include <stdio.h>
+extern int vsnprintf(char* str, size_t size, const char *format, va_list ap);
+
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h>
+
+extern n32 buffer_fmt(n32 len, char* buffer, CString format, ...)
+{
+	int size;
+
+	va_list args;
+	va_start(args, format);
+
+	size = vsnprintf(buffer, len, format, args);
+	if(size < 0) {
+		core_log(CORE_ERROR, "Could not format buffer \"%s\": %s",
+				format, strerror(errno));
+		exit(failure);
+	}
+
+	if((n32)size >= len)
+	{
+		core_log(CORE_DEBUG, "Truncation of buffer_fmt with format '%s'\n",
+				format);
+	}
+
+	va_end(args);
+	return (n32)size;
+}
 
 /* Return the index of the chr or -1 */
 i64 buffer_find_chr(char chr, char *buffer, n64 len) {
@@ -85,9 +115,9 @@ n64 buffer_copy_until_str(char *delimiter, n64 del_len,
 	return 0;
 }
 
-void savebuff(FILE *file, char *buffer, n64 buff_len)
+void buffer_put_to_file(FILE *file, n32 buff_len, char *buffer)
 {
-	n64 i;
+	n32 i;
 	for(i = 0; i < buff_len; ++i)
 	{
 		switch(buffer[i])
@@ -111,3 +141,18 @@ void savebuff(FILE *file, char *buffer, n64 buff_len)
 	fflush(file);
 }
 
+void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line)
+{
+	ssize_t sent_bytes = write(fd, buffer, buff_len);
+	if(sent_bytes < 0) {
+		core_log(CORE_ERROR_, file, line,
+				"Cannot write buffer to fd: %s\n", strerror(errno));
+		exit(failure);
+	}
+
+	core_log(CORE_DEBUG_, file, line,
+			"Writing %d bytes\n", sent_bytes);
+}
+
+#undef CORE_LOG_MODULE
+#define CORE_LOG_MODULE NULL

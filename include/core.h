@@ -180,9 +180,9 @@ extern bool string_equallit(String strA, CString strB);
 } while(0)
 
 
-/* Bit v2
+/* Bit v3
  * ------------------------------------------------------------ */
-#define CORE_BIT_VER 2
+#define CORE_BIT_VER 3
 
 /* #if CORE_BIT_SHA != 0xfac875ad08307edd */
 /* #error Core module BIT is out of date, bump the version and update the shas */
@@ -192,16 +192,24 @@ extern void printc(char c);
 extern void printb(n8 byte);
 extern void printw(n32 word);
 
-extern void savebuff(FILE *file, char *buffer, n64 buff_len);
 
-
-/* Buffer v1
+/* Buffer v2
  * ------------------------------------------------------------ */
-#define CORE_BUF_VER 1
+#define CORE_BUF_VER 2
 
 /* #if CORE_BUF_SHA != 0x75a0b7a96790fa97 */
 /* #error Core module BUF is out of date, bump the version and update the shas */
 /* #endif */
+
+
+#define buffer_write_tofd(FD, BUFF_LEN, BUFFER) \
+	buffer_write_tofd_((FD), (BUFF_LEN), (BUFFER), __FILE__, __LINE__)
+
+
+extern void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line);
+
+
+extern n32 buffer_fmt(n32 len, char* buffer, CString format, ...);
 
 /* Return the index of the chr or -1 */
 extern i64 buffer_find_chr(char chr, char *buffer, n64 len);
@@ -218,6 +226,8 @@ extern n64 buffer_copy_until_chr(char delimiter,
 extern n64 buffer_copy_until_str(char *delimiter, n64 del_len,
             char *src_buffer, n64 src_len,
             char *dest_buffer, n64 dest_len);
+
+extern void buffer_put_to_file(FILE *file, n32 buff_len, char *buffer);
 
 
 /* Logger v3
@@ -244,6 +254,11 @@ typedef enum {
 #define CORE_DEBUG  LL_DEBUG, CORE_LOG_MODULE, __FILE__, __LINE__
 #define CORE_WARN   LL_WARN , CORE_LOG_MODULE, __FILE__, __LINE__
 #define CORE_ERROR  LL_ERROR, CORE_LOG_MODULE, __FILE__, __LINE__
+
+#define CORE_INFO_   LL_INFO , CORE_LOG_MODULE
+#define CORE_DEBUG_  LL_DEBUG, CORE_LOG_MODULE
+#define CORE_WARN_   LL_WARN , CORE_LOG_MODULE
+#define CORE_ERROR_  LL_ERROR, CORE_LOG_MODULE
 
 extern void core_log(LogLevel level, CString module,
 		CString file, int line, CString format, ...);
