@@ -43,16 +43,13 @@ error hostname_resolve(const char *hostname, struct in_addr *address)
 	host_info = gethostbyname(hostname);
 	if(host_info == NULL)
 	{
-		printf("ERROR:%s:%d Could not resolve hostname %s\n%s",
-		       __FILE__,
-		       __LINE__,
-		       hostname,
-		       strerror(h_errno));
+		core_log(CORE_ERROR, "Could not resolve hostname %s\n%s",
+		         hostname, strerror(h_errno));
 		return success;
 	}
 
 #if DEBUG_ENABLE
-	printf("DEBUG: Resolved hostname, %s => %d.%d.%d.%d\n",
+	core_log(CORE_DEBUG, "Resolved hostname, %s => %d.%d.%d.%d\n",
 	       hostname,
 	       (n8)(*host_info->h_addr_list)[0],
 	       (n8)(*host_info->h_addr_list)[1],

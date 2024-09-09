@@ -30,7 +30,8 @@ extern n32 buffer_fmt(n32 len, char* buffer, CString format, ...)
 	if((n32)size >= len)
 	{
 		core_log(CORE_WARN,
-				"Truncation of buffer_fmt with format '%s'\n", format);
+				"Truncation of buffer_fmt with format '%s' (size %u >= len %u)\n",
+				format, size, len);
 	}
 
 	va_end(args);
@@ -145,13 +146,12 @@ void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line
 {
 	ssize_t sent_bytes = write(fd, buffer, buff_len);
 	if(sent_bytes < 0) {
-		core_log(CORE_ERROR_, file, line,
-				"Cannot write buffer to fd: %s\n", strerror(errno));
+		core_log(CORE_ERROR_, "Cannot write buffer to fd: %s\n",
+				strerror(errno));
 		exit(failure);
 	}
 
-	core_log(CORE_DEBUG_, file, line,
-			"Writing %d bytes\n", sent_bytes);
+	core_log(CORE_DEBUG_, "Writing %d bytes\n", sent_bytes);
 }
 
 bool buffer_equals(n64 buffA_len, n8* buffA, n64 buffB_len, n8* buffB)

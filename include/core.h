@@ -162,8 +162,8 @@ extern bool fstring_equals_CStr(FString strA, CString strB);
 		if((arr)->capacity < (cap)) { \
 			(arr)->items = drealloc((arr)->items, (cap) * sizeof(*(arr)->items)); \
 			if((arr)->items == NULL) { \
-				printf("ERROR:%s:%d: Couldn't resize array, message: %s", \
-						__FILE__, __LINE__, strerror(errno)); \
+				core_log(CORE_ERROR, "Could not resize array, message: %s", \
+						strerror(errno)); \
 				exit(failure); \
 			} \
 			(arr)->capacity = (cap); \
@@ -175,8 +175,8 @@ extern bool fstring_equals_CStr(FString strA, CString strB);
 	if((arr)->capacity < (src_len)) { \
 		(arr)->items = drealloc((arr)->items, (src_len) * sizeof(*(arr)->items)); \
 		if((arr)->items == NULL) { \
-			printf("ERROR:%s:%d: Couldn't resize array, message: %s", \
-					__FILE__, __LINE__, strerror(errno)); \
+			core_log(CORE_ERROR, "Could not resize array, message: %s", \
+					strerror(errno)); \
 			exit(failure); \
 		} \
 		(arr)->capacity = (src_len); \
@@ -191,8 +191,8 @@ extern bool fstring_equals_CStr(FString strA, CString strB);
 	if((arr)->capacity < (arr)->count + 1) { \
 		(arr)->items = drealloc((arr)->items, ((arr)->count + 1) * 2 * sizeof(*(arr)->items)); \
 		if((arr)->items == NULL) { \
-			printf("ERROR:%s:%d: Couldn't resize array, message: %s", \
-					__FILE__, __LINE__, strerror(errno)); \
+			core_log(CORE_ERROR, "Could not resize array, message: %s", \
+					strerror(errno)); \
 			exit(failure); \
 		} \
 		(arr)->capacity = ((arr)->count + 1) * 2; \
@@ -278,10 +278,10 @@ typedef enum {
 #define CORE_WARN   LL_WARN , CORE_LOG_MODULE, __FILE__, __LINE__
 #define CORE_ERROR  LL_ERROR, CORE_LOG_MODULE, __FILE__, __LINE__
 
-#define CORE_INFO_   LL_INFO , CORE_LOG_MODULE
-#define CORE_DEBUG_  LL_DEBUG, CORE_LOG_MODULE
-#define CORE_WARN_   LL_WARN , CORE_LOG_MODULE
-#define CORE_ERROR_  LL_ERROR, CORE_LOG_MODULE
+#define CORE_INFO_   LL_INFO , CORE_LOG_MODULE, file, line
+#define CORE_DEBUG_  LL_DEBUG, CORE_LOG_MODULE, file, line
+#define CORE_WARN_   LL_WARN , CORE_LOG_MODULE, file, line
+#define CORE_ERROR_  LL_ERROR, CORE_LOG_MODULE, file, line
 
 extern void core_log(LogLevel level, CString module,
 		CString file, int line, CString format, ...);

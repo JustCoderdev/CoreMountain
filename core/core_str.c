@@ -21,13 +21,13 @@ void fstring_new_(FString* string, n32 capacity, char* file, int line)
 {
 	string->chars = malloc_(capacity, file, line);
 	if(string->chars == NULL) {
-		printf("ERROR:%s:%d: Couldn't mallocate string, error: %s",
-				file, line, strerror(errno));
+		core_log(CORE_ERROR_, "Could not mallocate fstring, error: %s",
+				strerror(errno));
 		exit(failure);
 	}
 
 #if DEBUG_STRING_ENABLE
-	printf("DEBUG: Mallocated string at %p with size %lu\n",
+	core_log(CORE_DEBUG_, "Mallocated string at %p with size %lu\n",
 			string->chars, capacity);
 #endif
 
@@ -45,13 +45,14 @@ void fstring_new_from_(FString* string, n32 text_len, char* text, char* file, in
 {
 	string->chars = malloc_(text_len, file, line);
 	if(string->chars == NULL) {
-		printf("ERROR:%s:%d: Couldn't mallocate string, error: %s",
-				file, line, strerror(errno));
+		core_log(CORE_ERROR_, "Could not mallocate fstring, error: %s",
+				strerror(errno));
 		exit(failure);
 	}
 
 #if DEBUG_STRING_ENABLE
-	printf("DEBUG: Mallocated string at %p with size %lu\n", string->chars, text_len);
+	core_log(CORE_DEBUG_, "Mallocated string at %p with size %lu\n",
+			string->chars, text_len);
 #endif
 
 	strncpy(string->chars, text, text_len);
@@ -70,8 +71,7 @@ void fstring_from_(FString* string, n32 text_len, char* text, char* file, int li
 
 	if(string->count < text_len)
 	{
-		core_log(CORE_WARN_, file, line,
-				"Could not fit text inside fstring (%u > %u)\n",
+		core_log(CORE_WARN_, "Could not fit text inside fstring (%u > %u)\n",
 				text_len, string->count);
 		/* return failure; */
 	}
@@ -87,7 +87,7 @@ void dstring_from_(DString* string, n32 text_len, char* text, char* file, int li
 	{
 		string->data.chars = realloc_(string->data.chars, text_len, file, line);
 		if(string->data.chars == NULL) {
-			core_log(CORE_ERROR_, file, line, "Could not reallocate string: %s",
+			core_log(CORE_ERROR_, "Could not reallocate string: %s",
 					strerror(errno));
 			exit(failure);
 		}
@@ -105,7 +105,7 @@ void dstring_nterm_(DString* string, char* file, int line)
 			|| string->data.chars[string->data.count - 1] != '\0')
 	{
 #if DEBUG_STRING_ENABLE
-		core_log(CORE_DEBUG_, file, line, "Null terminating string '"STR_FMT"' at %p...\n",
+		core_log(CORE_DEBUG_, "Null terminating string '"STR_FMT"' at %p...\n",
 				DSTR(*string), string->chars);
 #endif
 
@@ -144,7 +144,7 @@ CString fstring_as_CStr_(FString* string, char* file, int line)
 fstring_as_CStr_check:
 	if(!isCString)
 	{
-		core_log(CORE_ERROR_, file, line,
+		core_log(CORE_ERROR_,
 				"Check for converting fstring to CString failed: %s\n",
 				error_message);
 		exit(failure);
@@ -198,7 +198,7 @@ void dstring_append_(DString* string, char chr, char* file, int line)
 
 		string->data.chars = realloc_(string->data.chars, new_size, file, line);
 		if(string->data.chars == NULL) {
-			core_log(CORE_ERROR_, file, line, "Could not resize string: %s\n",
+			core_log(CORE_ERROR_, "Could not resize string: %s\n",
 					strerror(errno));
 			exit(failure);
 		}
