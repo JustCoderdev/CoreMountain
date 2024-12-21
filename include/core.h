@@ -223,15 +223,19 @@ extern void printw(n32 word);
 /* #error Core module BUF is out of date, bump the version and update the shas */
 /* #endif */
 
+/* typedef struct { */
+/* 	n64 size; */
+/* 	n8* bytes; */
+/* } FBuffer; */
 
-#define buffer_write_tofd(FD, BUFF_LEN, BUFFER) \
-	buffer_write_tofd_((FD), (BUFF_LEN), (BUFFER), __FILE__, __LINE__)
+#define buffer_write_tofd(FD, BUFF_LEN, BUFFER) buffer_write_tofd_((FD), (BUFF_LEN), (BUFFER), __FILE__, __LINE__)
 
 
 extern void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line);
+extern void buffer_put_to_file(FILE *file, n32 buff_len, char *buffer);
 
-
-extern n32 buffer_fmt(n32 len, char* buffer, CString format, ...);
+extern n32  buffer_fmt(n32 len, char* buffer, CString format, ...);
+extern bool buffer_equals(n64 buffA_len, const n8* buffA, n64 buffB_len, const n8* buffB);
 
 /* Return the index of the chr or -1 */
 extern i64 buffer_find_chr(char chr, char *buffer, n64 len);
@@ -248,9 +252,6 @@ extern n64 buffer_copy_until_chr(char delimiter,
 extern n64 buffer_copy_until_str(char *delimiter, n64 del_len,
             char *src_buffer, n64 src_len,
             char *dest_buffer, n64 dest_len);
-
-extern void buffer_put_to_file(FILE *file, n32 buff_len, char *buffer);
-extern bool buffer_equals(n64 buffA_len, n8* buffA, n64 buffB_len, n8* buffB);
 
 
 /* Logger v3
@@ -433,8 +434,10 @@ extern long file_size_get(FILE* file, CString file_name);
 
 #define TENV_UNKNOWN  0
 #define TENV_SHELL    1
-#define TENV_WINDOW   2
-#define TENV_ARDUINO  3
+#define TENV_SERVICE  2
+#define TENV_DEBUGGER 3
+#define TENV_WINDOW   3
+#define TENV_ARDUINO  4
 
 #define TOS_UNKOWN  0
 #define TOS_NONE    1

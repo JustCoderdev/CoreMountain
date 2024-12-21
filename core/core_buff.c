@@ -154,7 +154,8 @@ void buffer_write_tofd_(int fd, n32 buff_len, char *buffer, char* file, int line
 	core_log(CORE_DEBUG_, "Writing %d bytes\n", sent_bytes);
 }
 
-bool buffer_equals(n64 buffA_len, n8* buffA, n64 buffB_len, n8* buffB)
+bool buffer_equals(n64 buffA_len, const n8* buffA,
+                   n64 buffB_len, const n8* buffB)
 {
 	n64 i;
 

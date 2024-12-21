@@ -106,7 +106,7 @@ void dstring_nterm_(DString* string, char* file, int line)
 	{
 #if DEBUG_STRING_ENABLE
 		core_log(CORE_DEBUG_, "Null terminating string '"STR_FMT"' at %p...\n",
-				DSTR(*string), string->chars);
+				DSTR(*string), string->data.chars);
 #endif
 
 		dstring_append_(string, '\0', file, line);
